@@ -8,6 +8,7 @@ import chatRoutes from "./routes/chatRoutes.js";
 import bookingRoutes from "./routes/bookingRoutes.js";
 import beauticianworkRoutes from "./routes/beauticianworkRoute.js";
 import BeauticianInclusions from "./routes/beauticianinclusionsRoute.js";
+import bookingImageRoutes from "./routes/bookingImageRoute.js";
 
 import { connectDB } from "./lib/db.js";
 
@@ -23,6 +24,7 @@ app.use("/api/chat", chatRoutes)
 app.use("/api/booking", bookingRoutes)
 app.use("/api/beauticianWorks", beauticianworkRoutes)
 app.use("/api/beauticianInclusions", BeauticianInclusions)
+app.use("/api/bookingImage", bookingImageRoutes )
 
 app.listen(PORT, () => {
     console.log(`Server is running on http://localhost:${PORT}`);

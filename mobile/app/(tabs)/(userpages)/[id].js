@@ -35,6 +35,7 @@ export default function BeauticianProfile() {
   const [selectedTime, setSelectedTime] = useState(new Date());
   const [showDatePicker, setShowDatePicker] = useState(false);
   const [showTimePicker, setShowTimePicker] = useState(false);
+  const [bookingId, setBookingId] = useState("");
 
   const GetWorks = async () => {
     try {
@@ -49,7 +50,7 @@ export default function BeauticianProfile() {
         }
       );
       const data = await resp.json();
-
+      
       if (Array.isArray(data)) {
         setBeauticianWorks(data);
       } else {
@@ -160,7 +161,9 @@ export default function BeauticianProfile() {
   };
 
   const goToCamera = () => {
-    router.push("/camera"); // 👈 navigate to camera.jsx
+    console.log(bookingId);
+    
+    router.push({ pathname: "/camera", params: {bookingId} });
   };
 
   const handleBooking = () => {
@@ -189,6 +192,7 @@ export default function BeauticianProfile() {
         });
 
         const data = await response.json();
+        setBookingId(data.newBooking._id)
 
         if (!response.ok)
           throw new Error(data.message || "Something went wrong");
