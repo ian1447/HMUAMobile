@@ -4,8 +4,10 @@ import {
   FlatList,
   TextInput,
   Button,
+  Platform,
   StyleSheet,
   TouchableOpacity,
+  KeyboardAvoidingView,
 } from "react-native";
 import { useLocalSearchParams } from "expo-router";
 import { useEffect, useState } from "react";
@@ -16,7 +18,7 @@ import dayjs from "dayjs";
 import { useAuthStore } from "../../store/authStore";
 import { API_URL } from "../../constants/api";
 import { useFocusEffect } from "@react-navigation/native";
-import React, { useCallback } from 'react';
+import React, { useCallback } from "react";
 
 export const unstable_settings = {
   initialRouteName: "chat/[id]",
@@ -29,10 +31,10 @@ export default function ChatPage() {
   const [messages, setMessages] = useState([]);
   const [newMessage, setNewMessage] = useState("");
 
-  const GetChats= async () => {
-    const user_id = user.role === "user" ? user.id:id;
-    const beautician_id = user.role === "user" ? id: user.beautician;
-    
+  const GetChats = async () => {
+    const user_id = user.role === "user" ? user.id : id;
+    const beautician_id = user.role === "user" ? id : user.beautician;
+
     try {
       const resp = await fetch(
         `${API_URL}/api/chat?user_id=${user_id}&beautician_id=${beautician_id}`,
@@ -45,14 +47,12 @@ export default function ChatPage() {
         }
       );
       const data = await resp.json();
-      console.log(data);
-      
+
       if (Array.isArray(data)) {
         setMessages(data);
       } else {
         setMessages([]);
       }
-
     } catch (error) {
       console.error(error);
     }
@@ -79,9 +79,9 @@ export default function ChatPage() {
   const handleSendMessage = () => {
     const newMessageSend = async () => {
       try {
-        const user_id = user.role === "user" ? user.id:id;
+        const user_id = user.role === "user" ? user.id : id;
         const chat_text = newMessage;
-        const beautician_id =  user.role === "user" ? id: user.beautician;
+        const beautician_id = user.role === "user" ? id : user.beautician;
         const sender = user.role === "user" ? "user" : "beautician";
         const response = await fetch(`${API_URL}/api/chat`, {
           method: "POST",
@@ -118,7 +118,11 @@ export default function ChatPage() {
         <TouchableOpacity onPress={() => navigation.goBack()}>
           <Ionicons name="arrow-back" size={30} color="black" />
         </TouchableOpacity>
-        <Text style={styles.beauticianName}>{user.role === "user" ? messages[0]?.beautician_id?.name:messages[0]?.user_id?.username}</Text>
+        <Text style={styles.beauticianName}>
+          {user.role === "user"
+            ? messages[0]?.beautician_id?.name
+            : messages[0]?.user_id?.username}
+        </Text>
         <View style={{ width: 60 }} />
       </View>
 
@@ -128,9 +132,11 @@ export default function ChatPage() {
           <View
             style={[
               styles.messageContainer,
-              user.role === "user" ?  item.sender === "user" 
-                ? styles.userMessage
-                : styles.receiverMessage:item.sender === "user" 
+              user.role === "user"
+                ? item.sender === "user"
+                  ? styles.userMessage
+                  : styles.receiverMessage
+                : item.sender === "user"
                 ? styles.receiverMessage
                 : styles.userMessage,
             ]}
@@ -146,18 +152,28 @@ export default function ChatPage() {
         inverted
         style={styles.messageList}
       />
-      <View style={styles.inputContainer}>
-        <TextInput
-          style={styles.textInput}
-          value={newMessage}
-          onChangeText={setNewMessage}
-          placeholder="Type a message..."
-        />
-
-        <TouchableOpacity onPress={handleSendMessage} style={styles.sendButton}>
-          <Ionicons name="send" size={28} color="#EC7FA9" margin />
-        </TouchableOpacity>
-      </View>
+      <KeyboardAvoidingView
+        style={{ flex: 1 }}
+        behavior={Platform.OS === "ios" ? "padding" : "height"} // ⬅️ lifts input above keyboard on iOS
+        keyboardVerticalOffset={30} // adjust based on header height
+      >
+        <View style={{ flex: 1, justifyContent: "flex-end" }}>
+          <View style={styles.inputContainer}>
+            <TextInput
+              style={styles.textInput}
+              value={newMessage}
+              onChangeText={setNewMessage}
+              placeholder="Type a message..."
+            />
+            <TouchableOpacity
+              onPress={handleSendMessage}
+              style={styles.sendButton}
+            >
+              <Ionicons name="send" size={28} color="#EC7FA9" />
+            </TouchableOpacity>
+          </View>
+        </View>
+      </KeyboardAvoidingView>
     </View>
   );
 }

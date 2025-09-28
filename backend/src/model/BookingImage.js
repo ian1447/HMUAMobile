@@ -18,6 +18,7 @@ const bookingImageSchema = new mongoose.Schema(
       required: true,
       default: 0,
     },
+    is_selected: { type: Number, default: 0 },
   },
   {
     timestamps: true,

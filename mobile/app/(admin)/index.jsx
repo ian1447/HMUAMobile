@@ -12,13 +12,14 @@ export default function Chat() {
   const router = useRouter();
   const [chatList, setChatList] = useState([]);
   const { user, token } = useAuthStore();
-
   const goToChat = (id: string) => {
     router.push(`/(chat)/${id}`);
   };
 
   const GetChats = async () => {
-    const beautician_id = user.beautician;
+     if (!user || !token) return;
+
+    const beautician_id = user?.beautician;
     try {
       const resp = await fetch(
         `${API_URL}/api/chat/getlatestadmin?beautician_id=${beautician_id}`,
@@ -31,6 +32,7 @@ export default function Chat() {
         }
       );
       const data = await resp.json();
+      
       if (Array.isArray(data)) {
         setChatList(data);
       } else {
@@ -43,6 +45,7 @@ export default function Chat() {
 
   useFocusEffect(
     useCallback(() => {
+      if (!user || !token) return; 
       GetChats(); // Run immediately on focus
 
       const interval = setInterval(() => {

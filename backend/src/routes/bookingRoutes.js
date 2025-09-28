@@ -80,14 +80,17 @@ router.get("/admin", protectRoute, async (req, res) => {
     if (!beautician_id) {
       return res.status(400).json({ message: "Missing beautician_id" });
     }
+    console.log(beautician_id);
+    
 
     const bookings = await Booking.find({
-      beautician_id,
+      beautician_id
     })
       .populate("beautician_id")
       .populate("ubooker_id")
       .lean();
-
+    console.log(bookings);
+    
     res.send(bookings);
   } catch (error) {
     console.log("Error getting Bookings: ", error);

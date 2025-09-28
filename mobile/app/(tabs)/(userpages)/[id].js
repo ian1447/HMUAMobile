@@ -10,7 +10,7 @@ import {
   ScrollView,
   Button,
   Modal,
-  RefreshControl
+  RefreshControl,
 } from "react-native";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
@@ -50,7 +50,7 @@ export default function BeauticianProfile() {
         }
       );
       const data = await resp.json();
-      
+
       if (Array.isArray(data)) {
         setBeauticianWorks(data);
       } else {
@@ -162,8 +162,8 @@ export default function BeauticianProfile() {
 
   const goToCamera = () => {
     console.log(bookingId);
-    
-    router.push({ pathname: "/camera", params: {bookingId} });
+
+    router.push({ pathname: "/camera", params: { bookingId } });
   };
 
   const handleBooking = () => {
@@ -192,22 +192,19 @@ export default function BeauticianProfile() {
         });
 
         const data = await response.json();
-        setBookingId(data.newBooking._id)
+        setBookingId(data.newBooking._id);
 
         if (!response.ok)
           throw new Error(data.message || "Something went wrong");
         else {
           setModalVisible(false);
           alert("Booked successfully!");
-          goToCamera();
+          setBookingId(data.newBooking._id);
+          router.push({
+            pathname: "/camera",
+            params: { bookingId: data.newBooking._id },
+          });
         }
-
-        // if (!response.ok)
-        //   throw new Error(data.message || "Something went wrong");
-        // else {
-        //   setNewMessage("");
-        //   GetChats();
-        // }
       } catch (error) {
         console.error(error);
       }
@@ -250,63 +247,69 @@ export default function BeauticianProfile() {
         >
           <Ionicons name="arrow-back" size={30} color="black" />
         </TouchableOpacity>
-
-        <FlatList
-          data={beauticianWorks}
-          renderItem={renderItem}
-          keyExtractor={(item) => item._id}
-          horizontal
-          pagingEnabled
-          showsHorizontalScrollIndicator={false}
-          scrollEventThrottle={16}
-          onScroll={handleScroll}
-        />
-
-        <View style={styles.divider} />
-        <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Inclusions</Text>
-          <View style={styles.bulletList}>
-            {inclusions.map((item, index) => (
-              <Text key={index} style={styles.bulletItem}>
-                • {item.description}
+        {beauticianWorks.length > 0 ? (
+          <>
+            <FlatList
+              data={beauticianWorks}
+              renderItem={renderItem}
+              keyExtractor={(item) => item._id}
+              horizontal
+              pagingEnabled
+              showsHorizontalScrollIndicator={false}
+              scrollEventThrottle={16}
+              onScroll={handleScroll}
+            />
+            <View style={styles.divider} />
+            <View style={styles.section}>
+              <Text style={styles.sectionTitle}>Inclusions</Text>
+              <View style={styles.bulletList}>
+                {inclusions.map((item, index) => (
+                  <Text key={index} style={styles.bulletItem}>
+                    • {item.description}
+                  </Text>
+                ))}
+              </View>
+            </View>
+           
+            <View style={styles.divider} />  
+            <View style={styles.section}>
+              <Text style={styles.sectionTitle}>Reviews</Text>
+              <Text style={styles.sectionContent}>⭐ 4.8 (200 reviews)</Text>
+            </View>
+            
+            <View style={styles.bookingSection}> 
+              <Text style={styles.price}> 
+                {beauticianWorks[currentIndex]?.amount != null
+                  ? `₱${new Intl.NumberFormat("en-PH", {
+                      minimumFractionDigits: 2,
+                      maximumFractionDigits: 2,
+                    }).format(beauticianWorks[currentIndex].amount)}`
+                  : "₱--"}
               </Text>
-            ))}
-          </View>
-        </View>
 
-        {/* Reviews */}
-        <View style={styles.divider} />
-        <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Reviews</Text>
-          <Text style={styles.sectionContent}>⭐ 4.8 (200 reviews)</Text>
-        </View>
-
-        {/* Price and Book Button */}
-        <View style={styles.bookingSection}>
-          <Text style={styles.price}>
-            {beauticianWorks[currentIndex]?.amount != null
-              ? `₱${new Intl.NumberFormat("en-PH", {
-                  minimumFractionDigits: 2,
-                  maximumFractionDigits: 2,
-                }).format(beauticianWorks[currentIndex].amount)}`
-              : "₱--"}
-          </Text>
-
-          <View style={styles.buttonGroup}>
-            <TouchableOpacity
-              style={styles.secondaryButton}
-              onPress={() => goToChat(id)}
-            >
-              <Text style={styles.bookButtonText}>Chat</Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={styles.bookButton}
-              onPress={() => setModalVisible(true)}
-            >
-              <Text style={styles.bookButtonText}>Book</Text>
-            </TouchableOpacity>
-          </View>
-        </View>
+              <View style={styles.buttonGroup}>
+                <TouchableOpacity
+                  style={styles.secondaryButton}
+                  onPress={() => goToChat(id)}
+                >
+                  <Text style={styles.bookButtonText}>Chat</Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  style={styles.bookButton}
+                  onPress={() => setModalVisible(true)}
+                >
+                  <Text style={styles.bookButtonText}>Book</Text>
+                </TouchableOpacity>
+              </View>
+            </View>{" "}
+          </>
+        ) : (
+          <>
+            <View style={styles.emptyContainer}>
+              <Text style={styles.emptyText}>No works added</Text>
+            </View>
+          </>
+        )}
       </View>
       <Modal visible={modalVisible} transparent animationType="slide">
         <View style={styles.modalOverlay}>
@@ -371,14 +374,14 @@ export default function BeauticianProfile() {
               })}
             </Text>
 
-             {/* <View style={styles.actionButtons}>
-              <TouchableOpacity
-                onPress={goToCamera}
-                style={styles.confirmButton}
-              >
-                <Text style={{ color: "#fff" }}>Open Camera</Text>
-              </TouchableOpacity>
-             </View> */}
+            {/* <View style={styles.actionButtons}>
+                <TouchableOpacity
+                  onPress={goToCamera}
+                  style={styles.confirmButton}
+                >
+                  <Text style={{ color: "#fff" }}>Open Camera</Text>
+                </TouchableOpacity>
+              </View> */}
 
             <View style={styles.actionButtons}>
               <TouchableOpacity
@@ -589,5 +592,16 @@ const styles = StyleSheet.create({
   selectedLabel: {
     fontWeight: "bold",
     color: "#555",
+  },
+  emptyContainer: {
+    width: width,
+    height: height / 3,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  emptyText: {
+    fontSize: 18,
+    color: "#999",
+    fontStyle: "italic",
   },
 });

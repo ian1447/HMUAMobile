@@ -7,10 +7,11 @@ import {
   ActivityIndicator,
   KeyboardAvoidingView,
   Platform,
-  Alert
+  Alert,
+  ImageBackground
 } from "react-native";
 import { Link } from "expo-router";
-import styles from "../../assets/styles/login.styles";
+import styles from "../../assets/styles/login.styles2";
 import { useState } from "react";
 import { Ionicons } from "@expo/vector-icons";
 import COLORS from "../../constants/colors";
@@ -20,109 +21,117 @@ export default function Login() {
   const [email, setEmail] = useState("user@gmail.com");
   const [password, setPassword] = useState("password");
   const [showPassword, setShowPassword] = useState(false);
-  // const [isLoading, setIsLoading] = useState(false);
-  const {user, isLoading, login} = useAuthStore();
-
+  const { user, isLoading, login } = useAuthStore();
+  
   const handleLogin = async () => {
-    const result = await login(email,password);
-    
+    const result = await login(email, password);
     if (!result.success) Alert.alert("error", result.error);
-
   };
 
   return (
-    <KeyboardAvoidingView style={{flex:1}}
-    behavior={Platform.OS === "ios" ? "padding" : "height"}>
-      <View style={styles.container}>
-        <View style={styles.topIllustration}>
-          <Image
-            source={require("../../assets/images/loginlogo.png")}
-            style={styles.illustrationImage}
-            resizeMode="contain"
-          />
-        </View>
+    <KeyboardAvoidingView
+      style={{ flex: 1 }}
+      behavior={Platform.OS === "ios" ? "padding" : "height"}
+    >
+      <ImageBackground
+        source={require("../../assets/images/brush.jpg")} // 👈 replace with your bg image
+        style={styles.background}
+        resizeMode="cover"
+      >
+        <View style={styles.overlay} /> 
+        <View style={styles.container}>
+          <View style={styles.topIllustration}>
+            <Image
+              source={require("../../assets/images/loginlogo.png")}
+              style={styles.illustrationImage}
+              resizeMode="contain"
+            />
+          </View>
 
-        <View style={styles.card}>
-          <View style={styles.formContainer}>
-          <Text style={styles.labelLogin} >Login</Text>
-            {/* For email */}
-            <View style={styles.inputGroup}>
-              <Text style={styles.label}>Email</Text>
-              <View style={styles.inputContainer}>
-                <Ionicons
-                  name="mail-outline"
-                  size={20}
-                  color={COLORS.primary}
-                  style={styles.inputIcon}
-                />
-                <TextInput
-                  style={styles.input}
-                  placeholder="Enter your email"
-                  placeholderTextColor={COLORS.placeholderText}
-                  value={email}
-                  onChangeText={setEmail}
-                  keyboardType="email-address"
-                  autoCapitalize="none"
-                />
-              </View>
-            </View>
+          <View style={styles.card}>
+            <View style={styles.formContainer}>
+              <Text style={styles.labelLogin}>Login</Text>
 
-            {/* For password */}
-            <View style={styles.inputGroup}>
-              <Text style={styles.password}> Password </Text>
-              <View style={styles.inputContainer}>
-                <Ionicons
-                  name="lock-closed-outline"
-                  size={20}
-                  color={COLORS.primary}
-                  style={styles.inputIcon}
-                />
-                <TextInput
-                  style={styles.input}
-                  placeholder="Enter your password"
-                  placeholderTextColor={COLORS.placeholderText}
-                  value={password}
-                  onChangeText={setPassword}
-                  autoCapitalize="none"
-                  secureTextEntry={!showPassword}
-                />
-                <TouchableOpacity
-                  onPress={() => setShowPassword(!showPassword)}
-                  style={styles.eyeIcon}
-                >
+              {/* Email */}
+              <View style={styles.inputGroup}>
+                <Text style={styles.label}>Email</Text>
+                <View style={styles.inputContainer}>
                   <Ionicons
-                    name={showPassword ? "eye-outline" : "eye-off-outline"}
+                    name="mail-outline"
                     size={20}
                     color={COLORS.primary}
+                    style={styles.inputIcon}
                   />
-                </TouchableOpacity>
+                  <TextInput
+                    style={styles.input}
+                    placeholder="Enter your email"
+                    placeholderTextColor={COLORS.placeholderText}
+                    value={email}
+                    onChangeText={setEmail}
+                    keyboardType="email-address"
+                    autoCapitalize="none"
+                  />
+                </View>
               </View>
-            </View>
 
-            <TouchableOpacity
-              style={styles.button}
-              onPress={handleLogin}
-              disabled={isLoading}
-            >
-              {isLoading ? (
-                <ActivityIndicator color="#fff" />
-              ) : (
-                <Text style={styles.buttonText}> Login </Text>
-              )}
-            </TouchableOpacity>
+              {/* Password */}
+              <View style={styles.inputGroup}>
+                <Text style={styles.password}>Password</Text>
+                <View style={styles.inputContainer}>
+                  <Ionicons
+                    name="lock-closed-outline"
+                    size={20}
+                    color={COLORS.primary}
+                    style={styles.inputIcon}
+                  />
+                  <TextInput
+                    style={styles.input}
+                    placeholder="Enter your password"
+                    placeholderTextColor={COLORS.placeholderText}
+                    value={password}
+                    onChangeText={setPassword}
+                    autoCapitalize="none"
+                    secureTextEntry={!showPassword}
+                  />
+                  <TouchableOpacity
+                    onPress={() => setShowPassword(!showPassword)}
+                    style={styles.eyeIcon}
+                  >
+                    <Ionicons
+                      name={showPassword ? "eye-outline" : "eye-off-outline"}
+                      size={20}
+                      color={COLORS.primary}
+                    />
+                  </TouchableOpacity>
+                </View>
+              </View>
 
-            {/* Footer */}
-            <View style={styles.footer}>
-              <Text style={styles.footerText}> Don't have an account?</Text>
-              <Link href="/signup" asChild>
-                <TouchableOpacity>
-                  <Text style={styles.link}>Sign up</Text>
-                </TouchableOpacity>
-              </Link>
+              {/* Button */}
+              <TouchableOpacity
+                style={styles.button}
+                onPress={handleLogin}
+                disabled={isLoading}
+              >
+                {isLoading ? (
+                  <ActivityIndicator color="#fff" />
+                ) : (
+                  <Text style={styles.buttonText}>Login</Text>
+                )}
+              </TouchableOpacity>
+
+              {/* Footer */}
+              <View style={styles.footer}>
+                <Text style={styles.footerText}>Don't have an account?</Text>
+                <Link href="/signup" asChild>
+                  <TouchableOpacity>
+                    <Text style={styles.link}>Sign up</Text>
+                  </TouchableOpacity>
+                </Link>
+              </View>
             </View>
           </View>
         </View>
-      </View>
+      </ImageBackground>
     </KeyboardAvoidingView>
   );
 }

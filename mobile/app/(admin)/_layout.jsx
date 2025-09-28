@@ -29,15 +29,62 @@ export default function Tablayout() {
       <Tabs.Screen
         name="index"
         options={{
-          tabBarIcon: ({ focused, color }) => <Entypo name="chat" size={focused ? 30 : 24} color={color} />,
-          tabBarLabel: ({ focused, color }) => <Text style={{ color, fontWeight: focused ? "bold" : "normal", fontSize: 12 }}>Chat</Text>,
+          tabBarIcon: ({ focused, color }) => (
+            <Entypo name="chat" size={focused ? 30 : 24} color={color} />
+          ),
+          tabBarLabel: ({ focused, color }) => (
+            <Text
+              style={{
+                color,
+                fontWeight: focused ? "bold" : "normal",
+                fontSize: 12,
+              }}
+            >
+              Chat
+            </Text>
+          ),
+        }}
+      />
+      <Tabs.Screen
+        name="booking"
+        options={{
+          tabBarIcon: ({ focused, color }) => (
+            <MaterialIcons name="feed" size={focused ? 30 : 24} color={color} />
+          ),
+          tabBarLabel: ({ focused, color }) => (
+            <Text
+              style={{
+                color,
+                fontWeight: focused ? "bold" : "normal",
+                fontSize: 12,
+              }}
+            >
+              Booking
+            </Text>
+          ),
         }}
       />
       <Tabs.Screen
         name="profile"
         options={{
-          tabBarIcon: ({ focused, color }) => <Octicons name="person-fill" size={focused ? 30 : 24} color={color} />,
-          tabBarLabel: ({ focused, color }) => <Text style={{ color, fontWeight: focused ? "bold" : "normal", fontSize: 12 }}>Profile</Text>,
+          tabBarIcon: ({ focused, color }) => (
+            <Octicons
+              name="person-fill"
+              size={focused ? 30 : 24}
+              color={color}
+            />
+          ),
+          tabBarLabel: ({ focused, color }) => (
+            <Text
+              style={{
+                color,
+                fontWeight: focused ? "bold" : "normal",
+                fontSize: 12,
+              }}
+            >
+              Profile
+            </Text>
+          ),
         }}
       />
     </Tabs>

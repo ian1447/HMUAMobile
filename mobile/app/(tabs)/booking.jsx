@@ -81,7 +81,6 @@ export default function Booking() {
       });
       const data = await resp.json();
       // console.log(data);
-      console.log(data[0].beauticianWork_id);
 
       if (Array.isArray(data)) {
         setBookings(data);

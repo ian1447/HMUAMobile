@@ -85,12 +85,18 @@ export const useAuthStore = create((set) => ({
         },
       });
       const data = await resp.json();
+      console.log(data);
       
-      if (data?.message === "Token is not valid" || data?.message === "No user found" ) {
+
+      if (
+        data?.message === "Token is not valid" ||
+        data?.message === "No user found"
+      ) {
         await AsyncStorage.removeItem("token");
         await AsyncStorage.removeItem("user");
         set({ token: null, user: null });
       } else {
+        console.log("$$data", data);
         set({ token, user });
       }
     } catch (error) {
