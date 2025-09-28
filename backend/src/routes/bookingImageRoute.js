@@ -33,8 +33,6 @@ router.post("/", protectRoute, async (req, res) => {
 });
 
 router.get("/selected/:booking_id", protectRoute, async (req, res) => {
-  console.log("ming abot");
-  
   try {
     const { booking_id } = req.params;
 
@@ -42,9 +40,7 @@ router.get("/selected/:booking_id", protectRoute, async (req, res) => {
       booking_id,
       is_selected: 1,
     });
-    console.log(aiImages);
     
-
     res.status(200).json(aiImages);
   } catch (error) {
     console.error("BookingImage Selected Error:", error);
@@ -84,7 +80,7 @@ router.put("/:id", protectRoute, async (req, res) => {
     const updated = await BookingImage.findByIdAndUpdate(
       id,
       { $set: { is_selected: 1 } },
-      { new: true } // return updated doc
+      { new: true } 
     );
 
     if (!updated) {

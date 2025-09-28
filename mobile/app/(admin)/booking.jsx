@@ -110,6 +110,28 @@ export default function Booking() {
     }
   };
 
+  const updateStatus = async (bookingId, newStatus) => {
+    console.log("test",bookingId);
+    
+    try {
+      const resp = await fetch(`${API_URL}/api/booking/${bookingId}`, {
+        method: "PUT",
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ _status: newStatus }),
+      });
+
+      if (!resp.ok) throw new Error("Failed to update status");
+
+      setSelectedBooking(null);
+      GetBookings(); // refresh list
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
   return (
     <View style={{ flex: 1 }}>
       <ScrollView
@@ -216,7 +238,7 @@ export default function Booking() {
               >
                 {loading && (
                   <Image
-                    source={{ uri: "https://i.gifer.com/ZZ5H.gif" }} 
+                    source={{ uri: "https://i.gifer.com/ZZ5H.gif" }}
                     style={{ width: 50, height: 50, position: "absolute" }}
                   />
                 )}

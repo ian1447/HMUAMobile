@@ -53,7 +53,7 @@ router.post("/", protectRoute, async (req, res) => {
 router.get("/user", protectRoute, async (req, res) => {
   try {
     const { ubooker_id } = req.query;
-    
+
     if (!ubooker_id) {
       return res.status(400).json({ message: "Missing ubooker_id" });
     }
@@ -76,24 +76,49 @@ router.get("/user", protectRoute, async (req, res) => {
 router.get("/admin", protectRoute, async (req, res) => {
   try {
     const { beautician_id } = req.query;
-    
+
     if (!beautician_id) {
       return res.status(400).json({ message: "Missing beautician_id" });
     }
     console.log(beautician_id);
-    
 
     const bookings = await Booking.find({
-      beautician_id
+      beautician_id,
     })
       .populate("beautician_id")
       .populate("ubooker_id")
       .lean();
     console.log(bookings);
-    
+
     res.send(bookings);
   } catch (error) {
     console.log("Error getting Bookings: ", error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+});
+
+router.put("/:id", protectRoute, async (req, res) => {
+  try {
+    const { id } = req.params; // matches the URL param
+    const { _status } = req.body;
+
+    if (!id && !_status) {
+      return res.status(400).json({ message: "Missing BookingImageId" });
+    }
+
+    const updated = await Booking.findByIdAndUpdate(
+      id,
+      { $set: { status: _status } },
+      { new: true }
+    );
+
+    if (!updated) {
+      return res.status(404).json({ message: "Booking not found" });
+    }
+
+    res.json(updated);
+  } catch (error) {
+    console.error("❌ Error updating Booking:", error);
     res.status(500).json({ message: "Internal server error" });
   }
 });
